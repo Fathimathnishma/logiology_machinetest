@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:logiology_machinetest/features/home/widgets/filter_widget.dart';
+import 'package:logiology_machinetest/features/profile/view/profil_screen.dart';
 import 'package:logiology_machinetest/general/utils/app_colors.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -9,8 +10,17 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: AppColors.primaryColor,
         actions: [
-          CircleAvatar(radius: 22),
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ProfilScreen()),
+              );
+            },
+            child: CircleAvatar(radius: 22),
+          ),
           SizedBox(width: 13),
           InkWell(
             onTap: () {
@@ -71,25 +81,33 @@ class HomeScreen extends StatelessWidget {
                       // Placeholder for product image
                       Container(height: 100, color: Colors.grey[300]),
                       SizedBox(height: 8),
-                      Text(
-                        "Product Title",
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        'Price',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.blackColor.withOpacity(0.6),
-                        ),
-                      ),
-                      Text(
-                        'Rating: ',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.blackColor.withOpacity(0.6),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Product Title",
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              'Price',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: AppColors.blackColor.withOpacity(0.6),
+                              ),
+                            ),
+                            Text(
+                              'Rating: ',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: AppColors.blackColor.withOpacity(0.6),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],

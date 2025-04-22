@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "523609687312",
+    "project_id": "batchapp-4147a",
+    "storage_bucket": "batchapp-4147a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:523609687312:android:53a9e2fda28460fdd09195",
+        "android_client_info": {
+          "package_name": "com.example.ecomerce2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlbYpvSO_Am0BLwfPrNqDuIwt7ZXSWRew"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:523609687312:android:812c79aa4c88d0dfd09195",
+        "android_client_info": {
+          "package_name": "com.example.logiology_machinetest"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlbYpvSO_Am0BLwfPrNqDuIwt7ZXSWRew"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
