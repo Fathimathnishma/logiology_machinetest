@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:logiology_machinetest/features/auth/presentation/controller/auth_Controller.dart';
 import 'package:logiology_machinetest/features/home/view/home_screen.dart';
 import 'package:logiology_machinetest/general/utils/app_colors.dart';
 import 'package:logiology_machinetest/general/widgets/CTextform_widget.dart';
@@ -12,6 +15,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final authController = Get.put(AuthController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,6 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   SizedBox(height: 8),
                   CTextFormField(
+                    controller: authController.username,
                     height: 45,
                     borderRadius: 25,
                     labelText: "enter userName",
@@ -76,6 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   SizedBox(height: 8),
                   CTextFormField(
+                    controller: authController.password,
                     height: 45,
                     borderRadius: 25,
                     labelText: "enter password",
@@ -83,16 +90,23 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
               SizedBox(height: 78),
-              CustomButton(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomeScreen()),
-                  );
-                },
-                buttontext: "login",
-                color: AppColors.primaryColor,
-                textColor: Colors.white,
+              Obx(
+                () =>
+                    authController.isLoading.value
+                        ? CircularProgressIndicator()
+                        : CustomButton(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => HomeScreen(),
+                              ),
+                            );
+                          },
+                          buttontext: "login",
+                          color: AppColors.primaryColor,
+                          textColor: Colors.white,
+                        ),
               ),
             ],
           ),

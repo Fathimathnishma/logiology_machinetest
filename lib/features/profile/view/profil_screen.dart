@@ -1,4 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:logiology_machinetest/features/profile/controller/profile_Controller.dart';
 import 'package:logiology_machinetest/general/utils/app_colors.dart';
 import 'package:logiology_machinetest/general/widgets/CTextform_widget.dart';
 import 'package:logiology_machinetest/general/widgets/custom_button.dart';
@@ -12,7 +17,7 @@ class ProfilScreen extends StatefulWidget {
 
 class _ProfilScreenState extends State<ProfilScreen> {
   bool _isEditing = false;
-
+  final profileController = Get.put(ProfileController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,18 +39,32 @@ class _ProfilScreenState extends State<ProfilScreen> {
                   padding: const EdgeInsets.all(16),
                   child: Row(
                     children: [
-                      CircleAvatar(
-                        radius: 25,
-                        backgroundColor: AppColors.primaryColor,
-                        child: Text(
-                          'JJ',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 24,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
+                      Obx(() {
+                        if (profileController.isLoading.value) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          ); // Show loading while picking image
+                        }
+
+                        return CircleAvatar(
+                          radius: 25,
+                          backgroundColor: AppColors.primaryColor,
+                          backgroundImage:
+                              profileController.profileImgUrl.value.isNotEmpty
+                                  ? FileImage(
+                                    File(profileController.profileImgUrl.value),
+                                  ) // Load the image from local path
+                                  : null,
+                          child:
+                              profileController.profileImgUrl.value.isEmpty
+                                  ? Icon(
+                                    Icons.person,
+                                    color: Colors.white,
+                                  ) // Default icon when no image is selected
+                                  : null,
+                        );
+                      }),
+
                       const SizedBox(width: 12),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,6 +94,16 @@ class _ProfilScreenState extends State<ProfilScreen> {
                           });
                         },
                         child: Icon(Icons.edit),
+                      ),
+                      const SizedBox(width: 8),
+                      InkWell(
+                        onTap: () {
+                          profileController.showImageSourcePicker(context);
+                        },
+                        child: Icon(
+                          Icons.camera_alt,
+                          color: AppColors.primaryColor,
+                        ),
                       ),
                     ],
                   ),
@@ -115,6 +144,7 @@ class _ProfilScreenState extends State<ProfilScreen> {
                         ),
                         SizedBox(height: 6),
                         CTextFormField(
+                          controller: profileController.username,
                           height: 45,
                           borderRadius: 25,
                           labelText: "username",
@@ -134,18 +164,24 @@ class _ProfilScreenState extends State<ProfilScreen> {
                         ),
                         SizedBox(height: 6),
                         CTextFormField(
+                          controller: profileController.password,
                           height: 45,
                           borderRadius: 25,
                           labelText: "password",
                         ),
                         const SizedBox(height: 32),
-                        CustomButton(
-                          onTap: () {
-                            // Handle save logic here
-                          },
-                          buttontext: "Save",
-                          color: AppColors.primaryColor,
-                          textColor: Colors.white,
+                        Obx(
+                          () =>
+                              profileController.isLoading.value
+                                  ? CircularProgressIndicator()
+                                  : CustomButton(
+                                    onTap: () {
+                                      profileController.updateProfile();
+                                    },
+                                    buttontext: "Save",
+                                    color: AppColors.primaryColor,
+                                    textColor: Colors.white,
+                                  ),
                         ),
                       ],
                     ),
