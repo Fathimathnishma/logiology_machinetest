@@ -9,6 +9,7 @@ class CTextFormField extends StatelessWidget {
   final TextEditingController? controller;
   final TextInputType? keyboardType;
   final bool obscureText;
+  final Function(String)? onChanged; // Add onChanged callback
 
   const CTextFormField({
     super.key,
@@ -20,6 +21,7 @@ class CTextFormField extends StatelessWidget {
     this.controller,
     this.keyboardType,
     this.obscureText = false,
+    this.onChanged, // Initialize onChanged
   });
 
   @override
@@ -31,28 +33,20 @@ class CTextFormField extends StatelessWidget {
         controller: controller,
         keyboardType: keyboardType,
         obscureText: obscureText,
+        onChanged: onChanged, // Trigger onChanged when text changes
         decoration: InputDecoration(
           labelText: labelText,
-          labelStyle: TextStyle(
-            color: Colors.black,
-            fontSize: 15,
-          ), // Set label text color to black
+          labelStyle: TextStyle(color: Colors.black, fontSize: 15),
           filled: color != null,
           fillColor: color,
-          // Adjusting border with a thinner black border
           border: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Colors.black,
-              width: 1.0,
-            ), // thinner border
+            borderSide: BorderSide(color: Colors.black, width: 1.0),
             borderRadius: BorderRadius.circular(borderRadius ?? 8.0),
           ),
-          // Focused border with black color as well
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.black, width: 1.0),
             borderRadius: BorderRadius.circular(borderRadius ?? 8.0),
           ),
-          // Disabled border also set to black
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.black, width: 1.0),
             borderRadius: BorderRadius.circular(borderRadius ?? 8.0),

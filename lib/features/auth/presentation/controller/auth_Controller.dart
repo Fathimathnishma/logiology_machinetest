@@ -1,17 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:logiology_machinetest/features/auth/model/usermodel.dart';
+import 'package:logiology_machinetest/features/home/presentation/view/home_screen.dart';
 import 'package:logiology_machinetest/general/utils/firebase_collection.dart';
 
 class AuthController extends GetxController {
-  FirebaseFirestore fireStore = FirebaseFirestore.instance;
+  final FirebaseFirestore fireStore = FirebaseFirestore.instance;
+  final GetStorage storage = GetStorage();
 
-  //AUTH CONTROLLERS
-
-  TextEditingController username = TextEditingController();
-  TextEditingController password = TextEditingController();
+  // AUTH CONTROLLERS
+  final TextEditingController username = TextEditingController();
+  final TextEditingController password = TextEditingController();
 
   var isLoading = false.obs;
+  Rxn<Usermodel> loggedInUser = Rxn<Usermodel>();
 
   Future<void> login() async {
     isLoading.value = true;
@@ -25,8 +29,17 @@ class AuthController extends GetxController {
               .get();
 
       if (userQuery.docs.isNotEmpty) {
+        var doc = userQuery.docs.first;
+        var user = Usermodel.fromMap(doc.data());
+        loggedInUser.value = user;
+
+        // ✅ Save fetched user data to GetStorage
+        storage.write('username', user.username);
+        storage.write('password', user.password);
+        storage.write('profile_image', user.profileImgurl);
+
         Get.snackbar("Success", "Login successful");
-        // Navigate to home or dashboard
+        Get.offAll(() => HomeScreen());
       } else {
         Get.snackbar("Error", "Invalid username or password");
       }

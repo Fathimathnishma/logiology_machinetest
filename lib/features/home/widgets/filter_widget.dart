@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/get_instance.dart';
+import 'package:logiology_machinetest/features/home/presentation/controller/product_controller.dart';
 import 'package:logiology_machinetest/general/utils/app_colors.dart';
 
 class PopupFilterWidget extends StatelessWidget {
-  //final ProductController controller;
-
-  //  PopupFilterWidget({required this.controller});
-
   @override
   Widget build(BuildContext context) {
+    final productController = Get.put(ProductController());
+
     return Container(
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.all(
-          Radius.circular(16),
-          //  topRight: Radius.circular(16),
-        ),
+        borderRadius: BorderRadius.all(Radius.circular(16)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -26,79 +24,41 @@ class PopupFilterWidget extends StatelessWidget {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 20),
-          Row(
-            children: [
-              Text(
-                " Category",
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.blackColor,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 10),
-          // Category Input
+
           TextField(
-            decoration: InputDecoration(labelText: 'Category'),
-            onChanged: (value) {
-              //   controller.categoryFilter.value = value;
-            },
-          ),
-          Row(
-            children: [
-              Text(
-                " Tag",
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.blackColor,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 10),
-          // Tag Input
-          TextField(
-            decoration: InputDecoration(labelText: 'Tag'),
-            onChanged: (value) {
-              //    controller.tagFilter.value = value;
-            },
+            controller: productController.selectedCategory,
+            decoration: InputDecoration(labelText: 'Enter Category'),
           ),
 
-          Row(
-            children: [
-              Text(
-                "Price",
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.blackColor,
-                ),
-              ),
-            ],
-          ),
           SizedBox(height: 10),
-          // Max Price Input
           TextField(
+            controller: productController.selectedTag,
+            decoration: InputDecoration(labelText: 'Enter Tag'),
+            onChanged: (value) {},
+          ),
+
+          SizedBox(height: 10),
+          TextField(
+            controller: productController.maxPrice,
             decoration: InputDecoration(labelText: 'Max Price'),
             keyboardType: TextInputType.number,
-            onChanged: (value) {
-              //   controller.priceFilter.value = double.tryParse(value) ?? double.infinity;
-            },
+            onChanged: (value) {},
           ),
+
           SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
-              // controller.filterProducts(
-              //   category: controller.categoryFilter.value,
-              //   tag: controller.tagFilter.value,
-              //   maxPrice: controller.priceFilter.value,
-              // );
-              // Get.back(); // Close the popup
+              productController.applyFilters();
+              Navigator.pop(context);
             },
-            child: Text("Apply Filter"),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primaryColor,
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            child: Text("Apply Filter", style: TextStyle(color: Colors.white)),
           ),
         ],
       ),

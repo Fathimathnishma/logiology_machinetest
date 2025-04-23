@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:logiology_machinetest/features/auth/presentation/controller/auth_Controller.dart';
-import 'package:logiology_machinetest/features/home/view/home_screen.dart';
+import 'package:logiology_machinetest/features/home/presentation/view/home_screen.dart';
 import 'package:logiology_machinetest/general/utils/app_colors.dart';
 import 'package:logiology_machinetest/general/widgets/CTextform_widget.dart';
 import 'package:logiology_machinetest/general/widgets/custom_button.dart';
@@ -96,12 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ? CircularProgressIndicator()
                         : CustomButton(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => HomeScreen(),
-                              ),
-                            );
+                            authController.login();
                           },
                           buttontext: "login",
                           color: AppColors.primaryColor,

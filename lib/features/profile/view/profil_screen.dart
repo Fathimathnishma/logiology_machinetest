@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/get_instance.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:logiology_machinetest/features/profile/controller/profile_Controller.dart';
 import 'package:logiology_machinetest/general/utils/app_colors.dart';
 import 'package:logiology_machinetest/general/widgets/CTextform_widget.dart';
@@ -18,11 +20,23 @@ class ProfilScreen extends StatefulWidget {
 class _ProfilScreenState extends State<ProfilScreen> {
   bool _isEditing = false;
   final profileController = Get.put(ProfileController());
+
+  @override
+  void initState() {
+    super.initState();
+    final storage = GetStorage();
+
+    // Load values from GetStorage
+    profileController.profileImgUrl.value = storage.read('profile_image') ?? "";
+    profileController.username.text = storage.read('username') ?? "";
+    profileController.password.text = storage.read('password') ?? "";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "Profile",
           style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500),
         ),
@@ -40,29 +54,27 @@ class _ProfilScreenState extends State<ProfilScreen> {
                   child: Row(
                     children: [
                       Obx(() {
-                        if (profileController.isLoading.value) {
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          ); // Show loading while picking image
-                        }
-
-                        return CircleAvatar(
-                          radius: 25,
-                          backgroundColor: AppColors.primaryColor,
-                          backgroundImage:
-                              profileController.profileImgUrl.value.isNotEmpty
-                                  ? FileImage(
-                                    File(profileController.profileImgUrl.value),
-                                  ) // Load the image from local path
-                                  : null,
-                          child:
-                              profileController.profileImgUrl.value.isEmpty
-                                  ? Icon(
-                                    Icons.person,
-                                    color: Colors.white,
-                                  ) // Default icon when no image is selected
-                                  : null,
-                        );
+                        return profileController.isLoading.value
+                            ? Center(child: CircularProgressIndicator())
+                            : CircleAvatar(
+                              radius: 25,
+                              backgroundColor: AppColors.primaryColor,
+                              backgroundImage:
+                                  profileController
+                                          .profileImgUrl
+                                          .value
+                                          .isNotEmpty
+                                      ? FileImage(
+                                        File(
+                                          profileController.profileImgUrl.value,
+                                        ),
+                                      )
+                                      : null,
+                              child:
+                                  profileController.profileImgUrl.value.isEmpty
+                                      ? Icon(Icons.person, color: Colors.white)
+                                      : null,
+                            );
                       }),
 
                       const SizedBox(width: 12),
@@ -70,14 +82,16 @@ class _ProfilScreenState extends State<ProfilScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Jalla Jalal',
-                            style: TextStyle(
+                            profileController.username.text.isNotEmpty
+                                ? profileController.username.text
+                                : 'UserName',
+                            style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
                           Text(
-                            '+91 9876543210',
+                            '+91 98*******10',
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
@@ -93,7 +107,7 @@ class _ProfilScreenState extends State<ProfilScreen> {
                             _isEditing = !_isEditing;
                           });
                         },
-                        child: Icon(Icons.edit),
+                        child: const Icon(Icons.edit),
                       ),
                       const SizedBox(width: 8),
                       InkWell(
@@ -110,7 +124,6 @@ class _ProfilScreenState extends State<ProfilScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-
               if (_isEditing)
                 Card(
                   color: Colors.white,
@@ -118,7 +131,7 @@ class _ProfilScreenState extends State<ProfilScreen> {
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
                       children: [
-                        Row(
+                        const Row(
                           children: [
                             Text(
                               'Edit profile',
@@ -130,7 +143,7 @@ class _ProfilScreenState extends State<ProfilScreen> {
                           ],
                         ),
                         const SizedBox(height: 32),
-                        Row(
+                        const Row(
                           children: [
                             Text(
                               " Enter new username",
@@ -142,7 +155,7 @@ class _ProfilScreenState extends State<ProfilScreen> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 6),
+                        const SizedBox(height: 6),
                         CTextFormField(
                           controller: profileController.username,
                           height: 45,
@@ -150,7 +163,7 @@ class _ProfilScreenState extends State<ProfilScreen> {
                           labelText: "username",
                         ),
                         const SizedBox(height: 16),
-                        Row(
+                        const Row(
                           children: [
                             Text(
                               "Enter new password",
@@ -162,7 +175,7 @@ class _ProfilScreenState extends State<ProfilScreen> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 6),
+                        const SizedBox(height: 6),
                         CTextFormField(
                           controller: profileController.password,
                           height: 45,
@@ -170,19 +183,18 @@ class _ProfilScreenState extends State<ProfilScreen> {
                           labelText: "password",
                         ),
                         const SizedBox(height: 32),
-                        Obx(
-                          () =>
-                              profileController.isLoading.value
-                                  ? CircularProgressIndicator()
-                                  : CustomButton(
-                                    onTap: () {
-                                      profileController.updateProfile();
-                                    },
-                                    buttontext: "Save",
-                                    color: AppColors.primaryColor,
-                                    textColor: Colors.white,
-                                  ),
-                        ),
+                        Obx(() {
+                          return profileController.isLoading.value
+                              ? const CircularProgressIndicator()
+                              : CustomButton(
+                                onTap: () {
+                                  profileController.updateProfile();
+                                },
+                                buttontext: "Edit",
+                                color: AppColors.primaryColor,
+                                textColor: Colors.white,
+                              );
+                        }),
                       ],
                     ),
                   ),
